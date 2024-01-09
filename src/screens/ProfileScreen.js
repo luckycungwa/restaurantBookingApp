@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { getAuth, signOut } from '@firebase/auth';
 
 const ProfileScreen = ({ navigation }) => {
   const [user, setUser] = useState(null); // fetch user details after login
+
+  useEffect(() => {
+    // Fetch user details when the component mounts
+    const auth = getAuth();
+    setUser(auth.currentUser);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -18,21 +24,29 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
-
       {user ? (
-        <View style={styles.userInfoContainer}>
-          <Text style={styles.userInfoText}>Name: {user.displayName}</Text>
-          <Text style={styles.userInfoText}>Email: {user.email}</Text>
-          {/* You can display additional user information here */}
+        <View style={styles.profileContainer}>
+          <Image
+            source={{ uri: user.photoURL || 'default-profile-image-url' }}
+            style={styles.profileImage}
+          />
+          <Text style={styles.userName}>{user.displayName}</Text>
+          <Text style={styles.userEmail}>{user.email}</Text>
+
+          {/* Additional user information */}
+          <Text style={styles.userInfoText}>About</Text>
+          <Text style={styles.userInfoText}>Privacy Center</Text>
+          <Text style={styles.userInfoText}>Help</Text>
+          <Text style={styles.userInfoText}>Restaurant Rewards</Text>
+          <Text style={styles.userInfoText}>Settings</Text>
+
+          <TouchableOpacity style={styles.button} onPress={handleLogout}>
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
         </View>
       ) : (
-        <Text style={styles.noUserText}>No user logged in</Text>
+        <Text style={styles.noUserText}>No user logged in. Log in of create account</Text>
       )}
-
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -44,13 +58,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  title: {
+  profileContainer: {
+    alignItems: 'center',
+    width: '80%',
+  },
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    marginBottom: 10,
+  },
+  userName: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 5,
   },
-  userInfoContainer: {
-    width: '80%',
+  userEmail: {
+    fontSize: 16,
     marginBottom: 20,
   },
   userInfoText: {
@@ -60,6 +84,12 @@ const styles = StyleSheet.create({
   noUserText: {
     fontSize: 16,
     color: 'red',
+    flex: 1,
+    fontWeight: 'bold',
+    alignContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#ffea2b',

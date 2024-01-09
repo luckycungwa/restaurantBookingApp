@@ -71,7 +71,7 @@ const ShopList = () => {
   }, [db, storage]);
 
   if (loading) {
-    return <ActivityIndicator size="medium" />;
+    return <ActivityIndicator size="small" color="#ffdf29"/>;
   }
 
   const filteredRestaurants = restaurants.filter(
