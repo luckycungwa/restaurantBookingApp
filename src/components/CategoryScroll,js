@@ -1,0 +1,69 @@
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+
+const CategoryScroll = () => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const categories = ["Burgers", "Sides", "Drinks", "Desserts", "Salads",];
+
+  const handleCategoryPress = (category) => {
+    setSelectedCategory(category === selectedCategory ? null : category);
+  };
+
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.container}>
+      {categories.map((category, index) => (
+        <TouchableOpacity
+          key={index}
+          style={[
+            styles.categoryChip,
+            selectedCategory === category ? styles.selectedCategoryChip : styles.outlinedCategoryChip,
+          ]}
+          onPress={() => handleCategoryPress(category)}
+        >
+          <Text
+            style={[
+              styles.categoryText,
+              selectedCategory === category ? styles.selectedCategoryText : styles.outlinedCategoryText,
+            ]}
+          >
+            {category}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  categoryChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginHorizontal: 8,
+    borderWidth: 1,
+  },
+  outlinedCategoryChip: {
+    backgroundColor: 'white',
+    borderColor: 'black',
+  },
+  selectedCategoryChip: {
+    backgroundColor: 'black',
+    borderColor: 'black',
+  },
+  categoryText: {
+    fontWeight: 'bold',
+  },
+  outlinedCategoryText: {
+    color: 'black',
+  },
+  selectedCategoryText: {
+    color: 'white',
+  },
+});
+
+export default CategoryScroll;
