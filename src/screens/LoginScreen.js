@@ -1,18 +1,35 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from '@firebase/auth';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../redux/actions/authActions';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+// Redux stuff
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      setErrorMessage('Please fill in all fields.');
+      setErrorModalVisible(true);
+      return;
+    }
     try {
       const auth = getAuth();
       await signInWithEmailAndPassword(auth, email, password);
-      // If login is successful, you can navigate to the desired screen
+      // If login is successful,nav to Home page
+      const userData = {
+        displayName: auth.currentUser.displayName,
+        email: auth.currentUser.email,
+        // Add other user data properties if needed
+      };
+
+      dispatch(loginSuccess(userData));
+      
       navigation.replace('Home');
     } catch (error) {
       console.error('Error logging in:', error.message);

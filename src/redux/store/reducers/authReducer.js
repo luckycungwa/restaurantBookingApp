@@ -1,5 +1,3 @@
-// store/reducers/authReducer.js
-
 const initialState = {
   user: null,
   isAuthenticated: false,
@@ -19,7 +17,7 @@ const authReducer = (state = initialState, action) => {
         user: null,
         isAuthenticated: false,
       };
-    // Add more cases based on your app's needs
+    // Add more cases maybe later
 
     default:
       return state;

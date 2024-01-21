@@ -1,5 +1,10 @@
-import { createStore } from 'redux';
-import rootReducer from './store/reducers'; // Ensure the correct path to your root reducer
+import { createStore, combineReducers } from 'redux';
+import authReducer from './store/reducers/authReducer'; // Make sure to provide the correct path
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  
+});
 
 const store = createStore(rootReducer);
 

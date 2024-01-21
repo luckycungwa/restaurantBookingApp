@@ -1,37 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { getAuth, signOut } from '@firebase/auth';
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { getAuth, signOut } from "@firebase/auth";
+import { useSelector } from "react-redux"; // Import useSelector from react-redux
+import { useNavigation } from "@react-navigation/native";
 
-const ProfileScreen = ({ navigation }) => {
-  const [user, setUser] = useState(null); // fetch user details after login
+const ProfileScreen = () => {
+  const authUser = useSelector((state) => state.auth.user);
 
-  useEffect(() => {
-    // Fetch user details when the component mounts
-    const auth = getAuth();
-    setUser(auth.currentUser);
-  }, []);
+  const navigation = useNavigation();
 
   const handleLogout = async () => {
     try {
       const auth = getAuth();
       await signOut(auth);
       // After logout, navigate to default splash
-      navigation.replace('SplashScreen');
+      navigation.replace("SplashScreen");
     } catch (error) {
-      console.error('Error logging out:', error.message);
+      console.error("Error logging out:", error.message);
     }
   };
 
+  const handleLogin = () => {
+    
+    // Navigate to Login screen
+    navigation.replace("Login");
+  };
+
+  const handleRegistration = () => {
+    // Navigate to Registration screen
+    navigation.replace("Register");
+  };
+
+  useEffect(() => {
+    // Fetch user details when the component mounts
+    const auth = getAuth();
+    auth.onAuthStateChanged((user) => {
+      // If user is logged in, fetch user details
+      if (user) {
+        // Dispatch action to update Redux state if needed
+      } else {
+        console.log("No user is signed in");
+      }
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
-      {user ? (
+      {authUser ? (
+        // Render user profile if user is authenticated
         <View style={styles.profileContainer}>
           <Image
-            source={{ uri: user.photoURL || 'default-profile-image-url' }}
+            source={{ uri: authUser.photoURL || "default-profile-image-url" }}
             style={styles.profileImage}
           />
-          <Text style={styles.userName}>{user.displayName}</Text>
-          <Text style={styles.userEmail}>{user.email}</Text>
+          <Text style={styles.userName}>{authUser.displayName}</Text>
+          <Text style={styles.userEmail}>{authUser.email}</Text>
 
           {/* Additional user information */}
           <Text style={styles.userInfoText}>About</Text>
@@ -45,7 +68,18 @@ const ProfileScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       ) : (
-        <Text style={styles.noUserText}>No user logged in. Log in of create account</Text>
+        // Render login and registration buttons if no user is logged in
+        <View style={styles.container}>
+          <Text style={styles.noUserText}>
+            No user logged in. Log in or create an account
+          </Text>
+          <TouchableOpacity style={styles.button} onPress={handleRegistration}>
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
       )}
     </View>
   );
@@ -54,13 +88,16 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "#fff",
+    flexDirection: "column",
+    gap: 10,
+    marginVertical: 20,
   },
   profileContainer: {
-    alignItems: 'center',
-    width: '80%',
+    alignItems: "center",
+    width: "80%",
   },
   profileImage: {
     width: 120,
@@ -70,7 +107,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
   userEmail: {
@@ -83,28 +120,30 @@ const styles = StyleSheet.create({
   },
   noUserText: {
     fontSize: 16,
-    color: 'red',
+    color: "red",
     flex: 1,
-    fontWeight: 'bold',
-    alignContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    textAlign: 'center',
+    fontWeight: "bold",
+    alignContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    textAlign: "center",
+    gap: 20,
+    flexDirection: "column",
   },
   button: {
-    backgroundColor: '#ffea2b',
+    backgroundColor: "#ffea2b",
     padding: 10,
     borderRadius: 5,
-    fontWeight: 'bold',
-    alignItems: 'center',
-    width: '80%',
+    fontWeight: "bold",
+    alignItems: "center",
+    width: "80%",
     marginTop: 20,
   },
   buttonText: {
-    color: '#fff',
+    color: "#0f0f0f",
     fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 

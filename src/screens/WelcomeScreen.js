@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 const WelcomeScreen = ({ navigation }) => {
+  
   useEffect(() => {
-    // Simulate a splash screen delay (you can replace this with your logic)
+    // Simulate a delay before navigating
     const splashTimeout = setTimeout(() => {
-      navigation.replace('Home'); // Replace 'Home' with your main app screen
+      navigation.navigate('Home', {screen: 'Home'});
     }, 3000); // 3000 milliseconds (3 seconds)
 
     return () => clearTimeout(splashTimeout); // Cleanup the timeout on unmount
